@@ -1,0 +1,14 @@
+Ultima_Saida = 
+    VAR AlunoAtual = 'PWBI_CATRACA_6MESES'[ALUNO_ID]
+    VAR DataAtual = 'PWBI_CATRACA_6MESES'[DIA]
+    VAR DataHoraSaida = 'PWBI_CATRACA_6MESES'[DIA] + 'PWBI_CATRACA_6MESES'[HORA]
+    VAR UltimaSaidaDia =
+        IF(
+            'PWBI_CATRACA_6MESES'[MOVIMENTO] = "Saída" &&
+            'PWBI_CATRACA_6MESES'[ALUNO_ID] = AlunoAtual &&
+            'PWBI_CATRACA_6MESES'[DIA] = DataAtual &&
+            'PWBI_CATRACA_6MESES'[DataHoraSaida] = CALCULATE(MAX('PWBI_CATRACA_6MESES'[DataHoraSaida]),
+                                                                ALLEXCEPT('PWBI_CATRACA_6MESES', 'PWBI_CATRACA_6MESES'[ALUNO_ID], 'PWBI_CATRACA_6MESES'[DIA]))
+            , 1, 0)
+    RETURN
+        IF(UltimaSaidaDia = 1, 'PWBI_CATRACA_6MESES'[DataHoraSaida], BLANK())
