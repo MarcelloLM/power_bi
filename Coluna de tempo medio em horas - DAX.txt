@@ -1,0 +1,23 @@
+Duração (em horas) = 
+    VAR AlunoAtual = 'PWBI_CATRACA_6MESES'[ALUNO_ID]
+    VAR DataAtual = 'PWBI_CATRACA_6MESES'[DIA]
+    VAR DataHoraEntrada = 'PWBI_CATRACA_6MESES'[DIA] + 'PWBI_CATRACA_6MESES'[HORA]
+    VAR DataHoraSaida = 'PWBI_CATRACA_6MESES'[DIA] + 'PWBI_CATRACA_6MESES'[HORA]
+    VAR PrimeiraEntradaDia =
+        CALCULATE(
+            MIN('PWBI_CATRACA_6MESES'[DataHoraEntrada]),
+            ALLEXCEPT('PWBI_CATRACA_6MESES', 'PWBI_CATRACA_6MESES'[ALUNO_ID], 'PWBI_CATRACA_6MESES'[DIA]),
+            'PWBI_CATRACA_6MESES'[MOVIMENTO] = "Entrada"
+        )
+    VAR UltimaSaidaDia =
+        CALCULATE(
+            MAX('PWBI_CATRACA_6MESES'[DataHoraSaida]),
+            ALLEXCEPT('PWBI_CATRACA_6MESES', 'PWBI_CATRACA_6MESES'[ALUNO_ID], 'PWBI_CATRACA_6MESES'[DIA]),
+            'PWBI_CATRACA_6MESES'[MOVIMENTO] = "Saída"
+        )
+    RETURN
+        IF(
+            NOT(ISBLANK(PrimeiraEntradaDia)) && NOT(ISBLANK(UltimaSaidaDia)) && 'PWBI_CATRACA_6MESES'[DataHoraSaida] = UltimaSaidaDia,
+            UltimaSaidaDia - PrimeiraEntradaDia,
+            BLANK()
+        )
